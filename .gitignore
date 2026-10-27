@@ -1,0 +1,30 @@
+# Environment variables (bot token, secrets)
+.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Downloaded files & temporary storage
+downloads/
+temp/
+*.tmp
+
+# Logs
+*.log
+bot.log
+
+# IDE & Editor settings
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
