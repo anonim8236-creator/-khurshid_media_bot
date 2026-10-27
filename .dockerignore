@@ -1,0 +1,8 @@
+.env
+bot.log
+downloads/
+__pycache__/
+*.pyc
+.git/
+.venv/
+venv/

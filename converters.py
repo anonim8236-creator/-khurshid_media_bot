@@ -27,15 +27,25 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-# Kirill va Lotin harflari to'g'ri chiqishi uchun Arial shriftini ro'yxatdan o'tkazamiz
+# Kirill va Lotin harflari to'g'ri chiqishi uchun shriftlarni ro'yxatdan o'tkazamiz (Windows va Linux/Render uchun)
 FONT_NAME = "Helvetica"
-windows_font_path = r"C:\Windows\Fonts\arial.ttf"
-if os.path.exists(windows_font_path):
-    try:
-        pdfmetrics.registerFont(TTFont("Arial", windows_font_path))
-        FONT_NAME = "Arial"
-    except Exception as e:
-        logger.warning(f"Arial shriftini yuklashda xatolik: {e}")
+possible_fonts = [
+    # Windows shriftlari
+    r"C:\Windows\Fonts\arial.ttf",
+    r"C:\Windows\Fonts\calibri.ttf",
+    # Linux shriftlari (Ubuntu / Debian / Render)
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+    "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+    "/usr/share/fonts/TTF/DejaVuSans.ttf",
+]
+for font_path in possible_fonts:
+    if os.path.exists(font_path):
+        try:
+            pdfmetrics.registerFont(TTFont("CustomFont", font_path))
+            FONT_NAME = "CustomFont"
+            break
+        except Exception as e:
+            logger.warning(f"Shriftni yuklashda xatolik ({font_path}): {e}")
 
 
 def extract_text_from_word_file(file_path: str) -> List[str]:

@@ -785,7 +785,7 @@ async def _health_check(request):
 
 
 async def start_web_server():
-    port = int(os.getenv("PORT", 8080))
+    port = int(os.getenv("PORT", 10000))
     app = web.Application()
     app.router.add_get("/", _health_check)
     app.router.add_get("/health", _health_check)
@@ -798,8 +798,8 @@ async def start_web_server():
 
 async def main():
     logger.info("Bot 24/7 rejimida ishga tushmoqda...")
-    # Cloud hostinglar (Render / Koyeb) PORT berganda veb-serverni parallel yoqamiz
-    if os.getenv("PORT"):
+    # Cloud hostinglar (Render / Koyeb) PORT berganda yoki RENDER muhitida veb-serverni parallel yoqamiz
+    if os.getenv("PORT") or os.getenv("RENDER"):
         try:
             await start_web_server()
         except Exception as e:
