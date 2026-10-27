@@ -809,6 +809,8 @@ async def main():
         try:
             # drop_pending_updates=False qilib, xabarlarni yo'qotmasdan qabul qilamiz
             await bot.delete_webhook(drop_pending_updates=False)
+            bot_info = await bot.get_me()
+            logger.info(f"✅ Bot muvaffaqiyatli ulandi: @{bot_info.username} (ID: {bot_info.id}). Xabarlar tinglanmoqda...")
             await dp.start_polling(bot)
         except (KeyboardInterrupt, SystemExit):
             logger.info("Bot to'xtatildi!")
