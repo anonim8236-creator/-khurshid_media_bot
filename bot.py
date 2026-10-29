@@ -796,6 +796,24 @@ async def start_web_server():
     logger.info(f"Cloud Veb-server port {port} da ishga tushirildi.")
 
 
+async def keep_alive(url: str, interval: int = 600):
+    """
+    Render bepul tarifi 15 daqiqa kiruvchi so'rov bo'lmasa servisni uxlatadi.
+    Shu sababli har 10 daqiqada o'zimizning ochiq manzilimizga ping yuboramiz.
+    """
+    import aiohttp
+
+    health_url = url.rstrip("/") + "/health"
+    while True:
+        await asyncio.sleep(interval)
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(health_url, timeout=aiohttp.ClientTimeout(total=30)) as resp:
+                    logger.info(f"Keep-alive ping: {resp.status}")
+        except Exception as e:
+            logger.warning(f"Keep-alive ping xatosi: {e}")
+
+
 async def main():
     logger.info("Bot 24/7 rejimida ishga tushmoqda...")
     # Cloud hostinglar (Render / Koyeb) PORT berganda yoki RENDER muhitida veb-serverni parallel yoqamiz
@@ -804,6 +822,12 @@ async def main():
             await start_web_server()
         except Exception as e:
             logger.warning(f"Veb-serverni ishga tushirishda xatolik: {e}")
+
+    # Render avtomatik beradigan ochiq manzil (masalan https://xxx.onrender.com)
+    external_url = os.getenv("RENDER_EXTERNAL_URL") or os.getenv("KEEP_ALIVE_URL")
+    if external_url:
+        keep_alive_task = asyncio.create_task(keep_alive(external_url))  # noqa: F841 (havolani saqlaymiz)
+        logger.info(f"Keep-alive yoqildi: {external_url}")
 
     while True:
         try:
